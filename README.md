@@ -25,3 +25,16 @@ Todos los archivos deben escribir los temas exactamente así, en minúscula y si
 - ensenar
 - arte
 - dibujar
+
+
+### Profesiones
+
+Cada profesión se guarda con el hecho `profesion(Id, Afinidades, Incompatibles)`. Las afinidades son los temas que encajan con la profesión y las incompatibles son los temas que chocan con ella.
+
+- ingenieria_en_computadores
+- ciencias_actuariales
+- diseno_grafico
+- arquitectura
+- psicologia
+- medicina
+- biologia
