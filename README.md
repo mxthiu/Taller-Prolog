@@ -38,3 +38,11 @@ Cada profesión se guarda con el hecho `profesion(Id, Afinidades, Incompatibles)
 - psicologia
 - medicina
 - biologia
+- derecho
+- educacion
+- periodismo
+- trabajo_social
+- administracion_de_empresas
+- veterinaria
+
+Cada profesión también tiene un hecho `nombre_profesion(Id, Nombre)` con el nombre que se le muestra al usuario, por ejemplo `nombre_profesion(psicologia, 'Psicología')`.
