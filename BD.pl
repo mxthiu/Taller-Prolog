@@ -1,3 +1,4 @@
+:- encoding(utf8).
 % BD.pl
 % Base de conocimientos de OrientadorCE.
 
@@ -38,3 +39,17 @@ nombre_profesion(periodismo, 'Periodismo').
 nombre_profesion(trabajo_social, 'Trabajo Social').
 nombre_profesion(administracion_de_empresas, 'Administración de Empresas').
 nombre_profesion(veterinaria, 'Veterinaria').
+
+% pregunta(Tema, Texto)
+pregunta(tecnologia, '¿Te gusta la tecnología?').
+pregunta(resolver_problemas, '¿Te gusta resolver problemas?').
+pregunta(ayudar, '¿Te interesa ayudar a las personas?').
+pregunta(escuchar, '¿Prefieres escuchar a los demás?').
+pregunta(matematicas, '¿Te gustan las matemáticas?').
+pregunta(arte, '¿Te gusta el arte?').
+pregunta(ciencias, '¿Te interesan las ciencias?').
+pregunta(animales, '¿Te gustan los animales?').
+pregunta(hablar, '¿Te gusta hablar en público?').
+pregunta(escribir, '¿Te gusta escribir?').
+pregunta(liderar, '¿Te gusta liderar grupos?').
+pregunta(ensenar, '¿Te gusta enseñar?').

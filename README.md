@@ -46,3 +46,20 @@ Cada profesión se guarda con el hecho `profesion(Id, Afinidades, Incompatibles)
 - veterinaria
 
 Cada profesión también tiene un hecho `nombre_profesion(Id, Nombre)` con el nombre que se le muestra al usuario, por ejemplo `nombre_profesion(psicologia, 'Psicología')`.
+
+### Preguntas
+
+Cada pregunta se guarda con el hecho `pregunta(Tema, Texto)`. El orden de los hechos es el orden en que se hacen las preguntas.
+
+### Preferencias necesarias
+
+El hecho `preferencias_necesarias(N)` indica cuántas preferencias válidas se piden antes de recomendar. Por ahora es 3.
+
+### Consultas de prueba
+
+Para revisar la base de datos, cargar `swipl BD.pl` y probar estas consultas.
+
+- `profesion(psicologia, Afinidades, Incompatibles).`
+- `nombre_profesion(diseno_grafico, Nombre).`
+- `pregunta(tecnologia, Texto).`
+- `profesion(Id, Afinidades, _), member(tecnologia, Afinidades).`
