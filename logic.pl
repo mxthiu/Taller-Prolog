@@ -8,10 +8,14 @@
 
 % Registrar preferencias
 registrar(afin(Tema)) :-
+    \+ rechaza(Tema),
+    \+ gusta(Tema),
     assertz(gusta(Tema)),
     verificar_meta.
 
 registrar(contra(Tema)) :-
+    \+ gusta(Tema),
+    \+ rechaza(Tema),
     assertz(rechaza(Tema)),
     verificar_meta.
 
@@ -54,8 +58,7 @@ compatible(Id) :-
 
 % Recomendaciones
 recomendar :-
-    findall(Nombre, (compatible(Id), nombre_profesion(Id, Nombre)), Lista),
-    Lista \= [],
+    setof(Nombre, Id^(compatible(Id), nombre_profesion(Id, Nombre)), Lista),
     !,
     writeln('Profesiones recomendadas:'),
     imprimir_lista(Lista).
