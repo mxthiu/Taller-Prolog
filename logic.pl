@@ -1,23 +1,23 @@
 :- encoding(utf8).
 :- set_stream(user_output, encoding(utf8)).
-:- consult('BD.pl').
 
-:- dynamic gusta/1. 
+:- consult('BD.pl').
+:- consult('BNF.pl').
+
+:- dynamic gusta/1.
 :- dynamic rechaza/1.
 
+% Registro de preferencias
 
-% Registrar preferencias
 registrar(afin(Tema)) :-
     \+ rechaza(Tema),
     \+ gusta(Tema),
-    assertz(gusta(Tema)),
-    verificar_meta.
+    assertz(gusta(Tema)).
 
 registrar(contra(Tema)) :-
     \+ gusta(Tema),
     \+ rechaza(Tema),
-    assertz(rechaza(Tema)),
-    verificar_meta.
+    assertz(rechaza(Tema)).
 
 cantidad_preferencias(Total) :-
     findall(G, gusta(G), Gustan),
@@ -31,19 +31,12 @@ preferencias_completas :-
     cantidad_preferencias(Total),
     Total >= N.
 
-% Verificacion de si se alcanzo el limte
-verificar_meta :-
-    preferencias_completas,
-    !,
-    writeln('--- Se ha alcanzado el número de preferencias necesarias ---'),
-    recomendar.
-verificar_meta.
-
-% Compatibilidades
+% Compatibilidad de profesiones
 compatible(Id) :-
     profesion(Id, Afinidades, Incompatibles),
 
-    member(TemaAfiliado, Afinidades), % Para que sea compatible debe gustarle al usuario alguna afinidad de la profesion
+    % Debe coincidir al menos un gusto del usuario
+    member(TemaAfiliado, Afinidades),
     gusta(TemaAfiliado),
 
     forall(
@@ -58,7 +51,12 @@ compatible(Id) :-
 
 % Recomendaciones
 recomendar :-
-    setof(Nombre, Id^(compatible(Id), nombre_profesion(Id, Nombre)), Lista),
+    setof(
+        Nombre,
+        Id^(compatible(Id),
+            nombre_profesion(Id, Nombre)),
+        Lista
+    ),
     !,
     writeln('Profesiones recomendadas:'),
     imprimir_lista(Lista).
@@ -67,12 +65,74 @@ recomendar :-
     writeln('No se encontraron coincidencias.').
 
 imprimir_lista([]).
+
 imprimir_lista([H|T]) :-
     format('- ~w~n', [H]),
     imprimir_lista(T).
 
+% Controlador de preguntas
+preguntar(TextoPregunta) :-
+    writeln(TextoPregunta),
+    read_line_to_string(user_input, Respuesta),
 
-% Reiniciar
+    texto_a_palabras(Respuesta, Palabras),
+
+    (
+        interpretar(Palabras, Preferencia)
+    ->
+        registrar(Preferencia)
+    ;
+        writeln('Respuesta invalida, Intenta otra vez :)'),
+        preguntar(TextoPregunta)
+    ).
+
+
+% Conversacion principal
+
+iniciar :-
+    limpiar,
+    writeln('Bienvenido a OrientadorCE.'),
+    writeln('Responda utilizando frases como:'),
+    writeln('"Me gusta la tecnologia"'),
+    writeln('"No me gusta el arte"'),
+    nl,
+
+    findall(
+        pregunta(Tema, Texto),
+        pregunta(Tema, Texto),
+        Preguntas
+    ),
+
+    conversacion(Preguntas).
+
+    % Condicion de parada ( se tiene suficientes preguntas)
+conversacion(_) :-
+    preferencias_completas,
+    !,
+    nl,
+    writeln('--- Se alcanzo el numero de preferencias necesarias ---'),
+    recomendar.
+
+conversacion([]) :-
+    !,
+    nl,
+    writeln('--- No hay mas preguntas disponibles ---'),
+    recomendar.
+
+% Preguntar siguiente tema
+conversacion([pregunta(Tema, Texto)|Resto]) :-
+
+    (
+        gusta(Tema)
+        ;
+        rechaza(Tema)
+    ),
+    !,
+    conversacion(Resto).
+
+conversacion([pregunta(_, Texto)|Resto]) :-
+    preguntar(Texto),
+    conversacion(Resto).
 
 limpiar :-
     retractall(gusta(_)),
