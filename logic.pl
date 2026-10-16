@@ -10,6 +10,23 @@
 % Registro de preferencias
 
 registrar(afin(Tema)) :-
+    gusta(Tema),
+    !,
+    writeln('Eso ya me lo habías dicho.').
+registrar(contra(Tema)) :-
+    rechaza(Tema),
+    !,
+    writeln('Eso ya me lo habías dicho.').
+registrar(afin(Tema)) :-
+    rechaza(Tema),
+    !,
+    writeln('Antes me dijiste lo contrario sobre ese tema.').
+registrar(contra(Tema)) :-
+    gusta(Tema),
+    !,
+    writeln('Antes me dijiste lo contrario sobre ese tema.').
+
+registrar(afin(Tema)) :-
     \+ rechaza(Tema),
     \+ gusta(Tema),
     assertz(gusta(Tema)).
@@ -50,16 +67,22 @@ compatible(Id) :-
     ).
 
 % Recomendaciones
+puntaje(Id, Puntos) :-
+    profesion(Id, Afinidades, _),
+    findall(T, (member(T, Afinidades), gusta(T)), Coinciden),
+    length(Coinciden, Puntos).
+
 recomendar :-
-    setof(
-        Nombre,
-        Id^(compatible(Id),
-            nombre_profesion(Id, Nombre)),
-        Lista
-    ),
+    findall(Puntos-Nombre,
+            ( compatible(Id), puntaje(Id, Puntos), nombre_profesion(Id, Nombre) ),
+            Pares),
+    Pares \== [],
     !,
+    pairs_keys(Pares, Claves),
+    max_list(Claves, Maximo),
+    setof(N, member(Maximo-N, Pares), Mejores),
     writeln('Profesiones recomendadas:'),
-    imprimir_lista(Lista).
+    imprimir_lista(Mejores).
 
 recomendar :-
     writeln('No se encontraron coincidencias.').
@@ -120,7 +143,7 @@ conversacion([]) :-
     recomendar.
 
 % Preguntar siguiente tema
-conversacion([pregunta(Tema, Texto)|Resto]) :-
+conversacion([pregunta(Tema, _)|Resto]) :-
 
     (
         gusta(Tema)
